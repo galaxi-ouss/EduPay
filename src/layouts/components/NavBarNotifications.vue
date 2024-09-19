@@ -85,6 +85,10 @@ const handleNotificationClick = (notification: Notification) => {
     notification.icon === 'tabler-school' ? router.push(`/notification/registration/${notification.email}`) : router.push(`/notification/payment/${notification.paymentId}`)
     toggle(false)
   }
+  else {
+    notification.icon === 'tabler-school' ? router.push(`/notification/registration/${notification.email}`) : router.push(`/notification/payment/${notification.paymentId}`)
+    toggle(false)
+  }
 }
 
 const toggle = (val) => {

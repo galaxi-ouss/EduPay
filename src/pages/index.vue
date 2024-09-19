@@ -10,7 +10,7 @@ import { useTheme } from 'vuetify';
 
 // Get the statistics store
 const notificationStore = useNotificationStore();
-const { onLoginNotifications } = notificationStore;
+const { onLoginNotifications, peagableNotifications } = notificationStore;
 const statisticsStore = useStatisticsStore();
 const { statisticsBarCharData, statisticsPolarAreaCharData, error, loading } = storeToRefs(statisticsStore);
 const { onLoginFetchData } = statisticsStore

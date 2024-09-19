@@ -29,6 +29,9 @@
       <div v-else-if="header.key==='account'">
         <VSwitch v-model="item.accountActive" @change="$emit('toggleAccount',item)" />
       </div>
+      <div v-else-if="header.key==='seen'">
+        <VSwitch v-model="item.seen" @change="$emit('toggleRead',item)" />
+      </div>
       <span v-else>
         <!-- Render plain text for other headers -->
         {{ item[header.key] }}
@@ -65,7 +68,7 @@ const { headers, data, totalData, actions } = toRefs(props);
 
 
 // Emits
-const emit = defineEmits(['edit-status', 'update:itemsPerPage', 'update:page', 'viewPDF', 'toggleAccount']);
+const emit = defineEmits(['edit-status', 'update:itemsPerPage', 'update:page', 'viewPDF', 'toggleAccount', 'toggleRead']);
 const resolvePaymentStatus = (status: string) => {
   if (status === PAYMENT_STATUS.CREATED)
     return { text: PAYMENT_STATUS.CREATED, color: 'primary' }

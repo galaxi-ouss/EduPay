@@ -55,7 +55,12 @@ const handleClick = (notification) => {
   emit('toggle-menu', false)
 }
 
+const router = useRouter()
+const viewAll = () => {
+  router.push('/notification')
+  emit('toggle-menu', false)
 
+}
 </script>
 
 <template>
@@ -92,7 +97,7 @@ const handleClick = (notification) => {
 
         <!-- 👉 Notifications list -->
         <PerfectScrollbar :options="{ wheelPropagation: false }" style="max-block-size: 23.75rem;">
-          <transition-group name="slide-fade" tag="div">
+          <transition-group name="list" tag="div" class="notification-transition">
             <VList class="notification-list rounded-0 py-0">
               <template v-for="(notification, index) in props.notifications" :key="notification.id">
                 <VDivider v-if="index > 0" />
@@ -112,9 +117,17 @@ const handleClick = (notification) => {
 
                     <VSpacer />
 
-                    <div class="d-flex flex-column align-end">
-                      <VIcon size="10" icon="tabler-circle-filled" :color="!notification.isSeen ? 'primary' : '#a8aaae'" :class="`${notification.isSeen ? 'visible-in-hover' : ''}`" class="mb-2" @click.stop="toggleReadUnread(notification.isSeen, notification.id)" />
-                      <IconBtn color="error" size="20" icon="tabler-x" class="visible-in-hover" @click.stop="$emit('remove', notification.id)" />
+                    <div class="d-flex flex-column align-center">
+                      <IconBtn size="8" class="mb-2" @click.stop="toggleReadUnread(notification.isSeen, notification.id)">
+                        <VIcon size="8" :icon="notification && notification.isSeen == true ? 'tabler-circle' : 'tabler-circle-filled'" />
+                        <v-tooltip left activator="parent">
+                          {{ notification.isSeen ? 'Mark as read' : 'Mark as Unread'}}
+                        </v-tooltip>
+                      </IconBtn>
+
+                      <IconBtn size="20" class="close-icon" @click.stop="$emit('remove', notification.id)">
+                        <VIcon size="15" icon="tabler-x" />
+                      </IconBtn>
                     </div>
                   </div>
                 </VListItem>
@@ -132,7 +145,7 @@ const handleClick = (notification) => {
 
         <!-- 👉 Footer -->
         <VCardText v-show="props.notifications.length" class="pa-4">
-          <VBtn block size="small">
+          <VBtn block size="small" @click="viewAll">
             View All Notifications
           </VBtn>
         </VCardText>
@@ -145,15 +158,14 @@ const handleClick = (notification) => {
 <style lang="scss">
 /* Slide from right */
 /* Add this to your style section */
-.slide-fade-enter-active,
-.slide-fade-leave-active {
-  transition: all 0.5s ease;
+.notification-transition .list-enter-active,
+.notification-transition .list-leave-active {
+  transition: opacity 0.5s ease, transform 0.5s ease;
 }
-
-.slide-fade-enter,
-.slide-fade-leave-to {
-  opacity: 0.1;
-  transform: translateY(-91px);
+.notification-transition .list-enter,
+.notification-transition .list-leave-to {
+  opacity: 0;
+  transform: translateX(30px); /* Adjust this for the desired effect */
 }
 
 .notification-section {
@@ -161,14 +173,25 @@ const handleClick = (notification) => {
   padding-inline: 1rem;
 }
 
+.icon:hover {
+  background: red;
+}
+
 .list-item-hover-class {
   .visible-in-hover {
     display: none;
+  }
+  .close-icon {
+    margin-right: 4px; /* Change to your desired color */
   }
 
   &:hover {
     .visible-in-hover {
       display: block;
+    }
+    .close-icon {
+      color: red;
+      margin-right: 4px; /* Change to your desired color */
     }
   }
 }
