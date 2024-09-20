@@ -1,7 +1,13 @@
 import { getNotificationTime } from "@/@core/utils/helpers";
 import { Notification } from "@/@layouts/types";
 export const useNotificationStore = defineStore("notification", () => {
+
   const notificationsList = ref<Notification[]>([])
+  const notificationsFromPagination = ref()
+  const loading = ref(false)
+  const error = ref('')
+
+
 
   function pushNotification(message: Notification) {
     const jsonObject = JSON.parse(message);
@@ -75,7 +81,31 @@ export const useNotificationStore = defineStore("notification", () => {
     return await useApi('/notifications/toggle-seen?id=' + id).patch().data.value
   }
 
+  //👉 - Peagable Notification
+  async function pageableNotifications(page?: Number, size?: String, seen?: Boolean) {
+    try {
+      const { data, error: hasError, isFetching } = await useApi(createUrl('/notifications/pageable', {
+        query: {
+          seen,
+          page: (page - 1),
+          size,
 
-  return { notificationsList, pushNotification, onLoginNotifications, markAllAsRead, removeNotification, deleteNotification, toggleSeen }
+        }
+      })
+      )
+      notificationsFromPagination.value = data.value
+      console.log(notificationsFromPagination.value);
+
+      loading.value = isFetching.value
+      console.log(loading.value);
+
+      error.value = hasError.value
+    }
+    catch (error) {
+
+    }
+  }
+
+  return { notificationsList, notificationsFromPagination, loading, error, pageableNotifications, pushNotification, onLoginNotifications, markAllAsRead, removeNotification, deleteNotification, toggleSeen }
 }
 ) 

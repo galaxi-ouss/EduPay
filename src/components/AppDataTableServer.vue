@@ -18,7 +18,7 @@
       <div v-else-if="header.key === 'actions'">
         <IconBtn v-for="(action, index) in actions" :key="index" @click="() => action.handler(item)">
           <VIcon :color="action?.color || 'secondary'" :size="action.size || 23" :icon="action.icon" />
-          <VTooltip activator="parent" top>{{ action?.icon == 'tabler-eye' ? 'View details' : action?.icon==='tabler-edit' ? " Edit Infos ": "Delete Student"  }}</VTooltip>
+          <VTooltip activator="parent" top>{{ action?.icon == 'tabler-eye' ? 'View details' : action?.icon==='tabler-edit' ? " Edit Infos ": "Delete Student" }}</VTooltip>
         </IconBtn>
       </div>
       <div v-else-if="header.key==='receipt'">
@@ -28,6 +28,9 @@
       </div>
       <div v-else-if="header.key==='account'">
         <VSwitch v-model="item.accountActive" @change="$emit('toggleAccount',item)" />
+      </div>
+      <div v-else-if="header.key==='seen'">
+        <VSwitch v-model="item.seen" @change="$emit('toggleRead',item)" />
       </div>
       <span v-else>
         <!-- Render plain text for other headers -->
@@ -65,7 +68,7 @@ const { headers, data, totalData, actions } = toRefs(props);
 
 
 // Emits
-const emit = defineEmits(['edit-status', 'update:itemsPerPage', 'update:page', 'viewPDF', 'toggleAccount']);
+const emit = defineEmits(['edit-status', 'update:itemsPerPage', 'update:page', 'viewPDF', 'toggleAccount', 'toggleRead']);
 const resolvePaymentStatus = (status: string) => {
   if (status === PAYMENT_STATUS.CREATED)
     return { text: PAYMENT_STATUS.CREATED, color: 'primary' }

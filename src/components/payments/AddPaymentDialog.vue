@@ -48,12 +48,23 @@ const currentPage = ref(0)
 const pageCount = ref(0)
 
 const selectFile = (e) => {
-  fileData.value[0] = {
-    file: file.value[0],
-    url: useObjectUrl(file.value[0]).value ?? '',
+  if (file.value.length > 0) {
+    const originalFile = file.value[0];
+    // const newFileName = `${originalFile.name.split('.')[0]}${Date.now()}.${originalFile.name.split('.').pop()}`;
+    const newFileName = `p.pdf`;
+
+    const renamedFile = new File([originalFile], newFileName, { type: originalFile.type });
+
+    fileData.value[0] = {
+      file: renamedFile,
+      url: useObjectUrl(renamedFile).value ?? '',
+    };
+    file.value[0] = renamedFile
+    blob.value = fileData.value[0].url;
+    console.log(fileData.value[0]);
   }
-  blob.value = fileData.value[0].url
-}
+};
+
 
 const paymentTypeItems = [PAYMENT_TYPE.TRANSFER, PAYMENT_TYPE.CHECK, PAYMENT_TYPE.DEPOSIT, PAYMENT_TYPE.CASH]
 
@@ -61,7 +72,8 @@ const onFormSubmit = async () => {
   refForm.value?.validate().then(({ valid }) => {
     if (valid) {
       newPayment.value.amount = Number(newPayment.value.amount)
-      console.table(newPayment.value);
+      // console.table(newPayment.value);
+      // console.table(file.value[0]);
 
       addOne(newPayment.value, file.value[0]).then(statusCode => {
         emit('onSubmit', statusCode);
